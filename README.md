@@ -3,9 +3,13 @@ This is a package for cleaning and preparing a corpus of text-scraped web pages 
 
 ## Features
 
+Several steps are taken to clean the documents including:
 * Converting markdown files into plain text
 * Removing headers, images, links from the document
-* A simple filtering mechanism so that only documents relevant to a particular topic are maintained.
+* Removing redundant text related to navigation, social media etc. using phrases stored in ```data/irrelevant_phrases.txt```.
+
+The cleaned corpus is then filtered to leave only those documents related to a set topic:
+* ADD IN
 
 ## Installation
 
