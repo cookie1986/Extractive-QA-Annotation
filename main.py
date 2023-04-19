@@ -5,23 +5,17 @@ from time import time
 from memory import check_memory_reqs
 import utils
 import filtering
-
-
-
-    #         # # check if document length is within SpaCy max_length 
-    #         # if len(cleaned_doc_ascii) >= 100000:
-    #         #     cleaned_doc_ascii = check_memory_reqs(cleaned_doc_ascii)
-
-    #         # filter out irrelevant phrases
-    #         filtered_doc = filter_irrelevant_text(cleaned_doc_ascii)
-
+import unprocessed_doc_handling
+from arg_parser import create_arg_parser
 
 utils.init_unmark()
 
-def process_docs(input_dir: str, output_dir: str, keywords: List[str]):
+def process_docs(input_dir: str, output_dir: str, keywords: List[str], verbose: bool = False):
 
     # start timer
     start_time = time()
+
+    print("Processing Docs")
     
     # check whether output_dir exists, and create one if not
     if not os.path.exists(output_dir):
@@ -36,6 +30,10 @@ def process_docs(input_dir: str, output_dir: str, keywords: List[str]):
         #  skip empty docs
         if type(content) == None:
             break
+
+        # print document ID if verbose is True
+        if verbose:
+            print(f"Processing document: {doc}")
         
         # remove images
         cleaned_doc = utils.remove_images(content)
@@ -57,20 +55,27 @@ def process_docs(input_dir: str, output_dir: str, keywords: List[str]):
                 split_docs = check_memory_reqs(cleaned_doc)
 
                 # process each split in split_docs
-                for i, part in enumerate(split_docs):
-                    # remove lines with redundant text
-                    part_filtered = filtering.filter_irrelevant_text(part)
+                try:
+                    for i, part in enumerate(split_docs):
+                        # remove lines with redundant text
+                        part_filtered = filtering.filter_irrelevant_text(part)
 
-                    # write to new file, add "part_i" if the number of sub-parts within split_docs > 1
-                    part_suffix = f'_part_{i}' if len(split_docs) > 1 else ""
-                    # set output_filename
-                    output_filename = os.path.join(output_dir, f'{doc}{part_suffix}.txt')
-                    # write to file
-                    with open(output_filename, 'w', encoding='utf-8') as file:
-                        file.write(part_filtered)
+                        # write to new file, add "part_i" if the number of sub-parts within split_docs > 1
+                        part_suffix = f'_part_{i}' if len(split_docs) > 1 else ""
+                        # set output_filename
+                        output_filename = os.path.join(output_dir, f'{doc}{part_suffix}.txt')
+                        # write to file
+                        with open(output_filename, 'w', encoding='utf-8') as file:
+                            file.write(part_filtered)
+                except:
+                    # store IDs for unprocessed docs
+                    unprocessed_doc_handling.doc_not_processed(doc)
 
                 # break after finding the first keyword
                 break
+    
+    # export IDs for unprocessed docs
+    unprocessed_doc_handling.export_unprocessed_docs(unprocessed_doc_handling.unprocessed_doc_ids)
         
     # print runtime
     end_time = time()
@@ -80,12 +85,9 @@ def process_docs(input_dir: str, output_dir: str, keywords: List[str]):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Process a dictionary of documents for QA annotation.")
-    parser.add_argument("input_dir", type=str, help="Path to the directory of documents to be processed.")
-    parser.add_argument("output_dir", type=str, help="Path to the location where processed documents are to be stored.")
-    parser.add_argument("--keywords", nargs="+", default=["asthma","lung","inhaler"], help="List of keywords to filter documents.")
+    parser = create_arg_parser()
     args = parser.parse_args()
 
-    process_docs(args.input_dir, args.output_dir, args.keywords)
+    process_docs(args.input_dir, args.output_dir, args.keywords, args.verbose)
 
     print("Documents processed.")

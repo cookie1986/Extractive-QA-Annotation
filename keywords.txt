@@ -1,0 +1,14 @@
+asthma
+lung
+inhaler
+wheezing
+breathlessness
+airway inflammation
+spirometry
+peak flow meter
+trigger
+short-acting beta2-agonists(SABAs)
+bronchospasm
+allergen
+bronchodilator
+respiratory distress

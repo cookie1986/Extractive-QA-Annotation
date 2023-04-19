@@ -14,11 +14,10 @@ patterns = [nlp.make_doc(phrase) for phrase in irrelevant_phrases]
 matcher.add("IrrelevantPhrases", patterns)
 
 def filter_irrelevant_text(input_text):
-    doc = nlp(input_text)
 
     # filter out irrelevant phrases
     filtered_text = []
-    for line in doc.splitlines():
+    for line in input_text.splitlines():
         # remove punctuation symbols
         filtered_line = re.sub(r'[^a-zA-Z]', ' ', line)
         line_doc = nlp(filtered_line)
