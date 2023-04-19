@@ -1,0 +1,9 @@
+first name
+last name
+surname
+email address
+mailing list
+contact us
+privacy policy
+copyright
+email

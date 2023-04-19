@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from time import time
 from memory import check_memory_reqs
 import utils
+import filtering
 
 
 
@@ -54,23 +55,19 @@ def process_docs(input_dir: str, output_dir: str, keywords: List[str]):
                 
                 # check memory requirements and split doc if doc is too long
                 split_docs = check_memory_reqs(cleaned_doc)
-                
-                try:
-                    print(len(split_docs))
-                except: 
-                    print(doc)
 
-                # # process each split in split_docs
-                # for i, part in enumerate(split_docs):
-                #     # ADD SPACY CODE
+                # process each split in split_docs
+                for i, part in enumerate(split_docs):
+                    # remove lines with redundant text
+                    part_filtered = filtering.filter_irrelevant_text(part)
 
-                #     # write to new file, add "part_i" if the number of sub-parts within split_docs > 1
-                #     part_suffix = f'_part_{i}' if len(split_docs) > 1 else ""
-                #     # set output_filename
-                #     output_filename = os.path.join(output_dir, f'{doc}{part_suffix}.txt')
-                #     # write to file
-                #     with open(output_filename, 'w', encoding='utf-8') as file:
-                #         file.write(cleaned_doc)
+                    # write to new file, add "part_i" if the number of sub-parts within split_docs > 1
+                    part_suffix = f'_part_{i}' if len(split_docs) > 1 else ""
+                    # set output_filename
+                    output_filename = os.path.join(output_dir, f'{doc}{part_suffix}.txt')
+                    # write to file
+                    with open(output_filename, 'w', encoding='utf-8') as file:
+                        file.write(part_filtered)
 
                 # break after finding the first keyword
                 break

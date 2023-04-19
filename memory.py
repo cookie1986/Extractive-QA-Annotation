@@ -4,7 +4,7 @@ import math
 # calculate memory per character for non Parser/NER tasks in SpaCy (requires 1GB per 100,000 character document)
 MEMORY_REQS_PER_CHAR = 1000000000 / 100000
 
-MAX_CHARS_ALLOWED = 100000
+MAX_CHARS_DEFAULT = 100000
 
 # get available memory
 def get_available_memory():
@@ -25,7 +25,7 @@ def check_memory_reqs(doc, memory_factor: int = MEMORY_REQS_PER_CHAR):
     # get length of document (in chars)
     doc_length = len(doc)
 
-    if doc_length > MAX_CHARS_ALLOWED:
+    if doc_length > MAX_CHARS_DEFAULT:
         # get current available memory
         current_available = get_available_memory()
     
