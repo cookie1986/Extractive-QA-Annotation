@@ -6,6 +6,9 @@ import src.utils as utils
 import src.filtering as filtering
 import src.memory as memory
 import src.unprocessed_doc_handling as unprocessed_doc_handling
+from path_helper import add_parent_dir_to_path
+
+add_parent_dir_to_path()
 
 utils.init_unmark()
 
@@ -69,6 +72,7 @@ def process_docs(input_dir: str, output_dir: str, keywords: List[str], verbose: 
     unprocessed_doc_handling.export_unprocessed_docs(unprocessed_doc_handling.unprocessed_doc_ids)
 
     end_time = time()
+    print("Documents processed.")
     print(f'Runtime: {end_time - start_time} seconds')
 
     return None
@@ -79,5 +83,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     process_docs(args.input_dir, args.output_dir, args.keywords, args.verbose)
-
-    print("Documents processed.")
