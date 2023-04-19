@@ -2,6 +2,7 @@ import re
 from markdown import Markdown
 from io import StringIO
 import string
+from typing import List
 
 
 def remove_headers(input_markdown):
@@ -67,3 +68,9 @@ def remove_nonprintable_chars(text):
     cleaned_text = ''.join(filter(lambda x: x in string.printable, text))
     
     return cleaned_text
+
+
+def contains_keywords(doc: str, keywords: List[str]) -> bool:
+    doc_tokens = set(doc.split())
+
+    return any(k in doc_tokens for k in keywords)
