@@ -1,16 +1,15 @@
 import os
+from path_helper import add_parent_dir_to_path
+add_parent_dir_to_path()
 from dotenv import load_dotenv
-from main import process_docs
-
+from scripts.main import process_docs
 
 load_dotenv()
 
 INPUT_DIR = os.environ['INPUT_DIR']
 OUTPUT_DIR = os.environ['OUTPUT_DIR']
 
-# asthma_keywords = ["asthma", "lung", "inhaler"]
-
-with open('keywords.txt', 'r') as f:
+with open('data/keywords.txt', 'r') as f:
     keywords_list = f.readlines()
 keywords_list = [kw.rstrip() for kw in keywords_list]
 

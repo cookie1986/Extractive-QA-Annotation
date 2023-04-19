@@ -3,6 +3,36 @@ from markdown import Markdown
 from io import StringIO
 import string
 from typing import List
+import spacy
+from spacy.matcher import PhraseMatcher
+
+nlp = spacy.load("en_core_web_sm")
+
+# load irrelevant phrases to be filtered
+with open('data/irrelevant_phrases.txt', 'r') as f:
+    irrelevant_phrases = f.readlines()
+irrelevant_phrases = [phrase.rstrip() for phrase in irrelevant_phrases]
+
+matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
+patterns = [nlp.make_doc(phrase) for phrase in irrelevant_phrases]
+matcher.add("IrrelevantPhrases", patterns)
+
+def remove_irrelevant_text(input_text):
+
+    # filter out irrelevant phrases
+    filtered_text = []
+    for line in input_text.splitlines():
+        # remove punctuation symbols
+        filtered_line = re.sub(r'[^a-zA-Z]', ' ', line)
+        line_doc = nlp(filtered_line)
+        matches = matcher(line_doc)
+        if not matches:
+            filtered_text.append(line)
+    
+    # join filtered text
+    cleaned_text = "\n".join(filtered_text)
+
+    return cleaned_text
 
 
 def remove_headers(input_markdown):
